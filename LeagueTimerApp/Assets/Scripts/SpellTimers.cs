@@ -22,6 +22,12 @@ public class SpellTimers : MonoBehaviour
     int smiteTime = 15;
     float currentTime = 0;
 
+    float cdrPercent = 0;
+    bool hasLucidity = false;
+    bool hasCosmicInsight = false;
+    bool addedLucidity = false;
+    bool addedCosmicInsight = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +42,18 @@ public class SpellTimers : MonoBehaviour
     void Update()
     {
         button.onClick.AddListener(TaskOnClick);
+
+        // Check if player has CDR items // addedLucidity and addedCosmicInsight bools are so that % cdr isn't added every update
+        if (/* this.player has Lucidity && */ addedLucidity == false)
+        {
+            cdrPercent += .10f;
+            addedLucidity = true;
+        }
+        if (/* this.player has Cosmic Insight && */ addedCosmicInsight == true)
+        {
+            cdrPercent += .05f;
+            addedCosmicInsight = true;
+        }
 
         // Converts the current number for the timer to Text
         this.Text.text = Mathf.RoundToInt(this.currentTime).ToString();
@@ -63,31 +81,31 @@ public class SpellTimers : MonoBehaviour
         switch (this.spellImage.sprite.name)
         {
             case "Flash":
-                this.currentTime = flashTime;
+                this.currentTime = flashTime - (flashTime * cdrPercent);
                 break;
             case "Teleport":
-                this.currentTime = teleportTime;
+                this.currentTime = teleportTime - (teleportTime * cdrPercent);
                 break;
             case "Smite":
-                this.currentTime = smiteTime;
+                this.currentTime = smiteTime - (smiteTime * cdrPercent);
                 break;
             case "Heal":
-                this.currentTime = healTime;
+                this.currentTime = healTime - (healTime * cdrPercent);
                 break;
             case "Ignite":
-                this.currentTime = igniteTime;
+                this.currentTime = igniteTime - (igniteTime * cdrPercent);
                 break;
             case "Ghost":
-                this.currentTime = ghostTime;
+                this.currentTime = ghostTime - (ghostTime * cdrPercent);
                 break;
             case "Barrier":
-                this.currentTime = barrierTime;
+                this.currentTime = barrierTime - (barrierTime * cdrPercent);
                 break;
             case "Exhaust":
-                this.currentTime = exhaustTime;
+                this.currentTime = exhaustTime - (exhaustTime * cdrPercent);
                 break;
             case "Cleanse":
-                this.currentTime = cleanseTime;
+                this.currentTime = cleanseTime - (cleanseTime * cdrPercent);
                 break;
         }
     }
